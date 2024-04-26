@@ -3,12 +3,16 @@ package com.example.Login.Service;
 import com.example.Login.Dto.Request.UserRequest;
 import com.example.Login.Dto.Request.UserUpdateRequest;
 import com.example.Login.Entity.User;
+import com.example.Login.Enum.Roles;
 import com.example.Login.Repository.UserRepository;
 import com.example.Login.exception.AppException;
 import com.example.Login.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -24,6 +28,12 @@ public class UserService {
         user.setPassword(request.getPassword());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Roles.USER.name());
+        user.setRoles(roles);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(user);
     }
     public List<User> getAllUsers(){
