@@ -18,5 +18,6 @@ public class User {
     private String password;
     private String email;
     private String phone;
-    Set<String> roles;
+    @JoinColumn(name = "user_id")
+    private Set<String> roles;
 }
