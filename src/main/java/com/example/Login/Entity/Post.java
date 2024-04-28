@@ -17,6 +17,7 @@ public class Post {
     private String title;
     private String content;
     private Date createAt;
+    private Date updateAt;
     @ManyToOne
     @JoinColumn(name="user_id")
     private User createBy;
