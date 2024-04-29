@@ -76,45 +76,45 @@ public class CommentService {
         return savedComment;
     }
 
-//    public List<Comment> getAllComments() {
-//        return commentRepository.findAll();
-//    }
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
+    }
 //
-//    public Comment getCommentById(String commentId) {
-//        Optional<Comment> optionalComment = commentRepository.findById(commentId);
-//        return optionalComment.orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
-//    }
+    public Comment getCommentById(String commentId) {
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        return optionalComment.orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+    }
 //
-//    public Comment updateComment(String commentId, CommentDTO commentDTO) {
-//        Logger logger = LoggerFactory.getLogger(CommentService.class);
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            throw new AppException(ErrorCode.UNAUTHENTICATED);
-//        }
-//
-//        Optional<User> optionalUser = userRepository.findByUsername(authentication.getName());
-//        if (optionalUser.isEmpty()) {
-//            throw new AppException(ErrorCode.USER_NOT_EXISTED);
-//        }
-//
-//        Optional<Comment> optionalComment = commentRepository.findById(commentId);
-//        if (optionalComment.isEmpty()) {
-//            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
-//        }
-//
-//        Comment comment = optionalComment.get();
-//        comment.setContent(commentDTO.getContent());
-//        comment.setUpdateAt(new Timestamp(System.currentTimeMillis()));
-//
-//        return commentRepository.save(comment);
-//    }
-//
-//    public void deleteComment(String commentId) {
-//        Optional<Comment> optionalComment = commentRepository.findById(commentId);
-//        Comment comment = optionalComment.orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
-//
-//        commentRepository.delete(comment);
-//    }
+    public Comment updateComment(String commentId, CommentDTO commentDTO) {
+        Logger logger = LoggerFactory.getLogger(CommentService.class);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        Optional<User> optionalUser = userRepository.findByUsername(authentication.getName());
+        if (optionalUser.isEmpty()) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        if (optionalComment.isEmpty()) {
+            throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
+        }
+
+        Comment comment = optionalComment.get();
+        comment.setContent(commentDTO.getContent());
+        comment.setUpdateAt(new Timestamp(System.currentTimeMillis()));
+
+        return commentRepository.save(comment);
+    }
+
+    public void deleteComment(String commentId) {
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        Comment comment = optionalComment.orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+
+        commentRepository.delete(comment);
+    }
 }
 

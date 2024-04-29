@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/comments")
 public class CommentController {
     @Autowired
     CommentService commentService;
-    @PostMapping("/{post_id}/comments")
+    @PostMapping("/{post_id}")
     public ApiResponse<Comment> createComment(@PathVariable String post_id, @RequestBody CommentDTO commentDTO) {
         Comment comment = commentService.createComment(post_id, commentDTO);
         ApiResponse<Comment> response = new ApiResponse<>();
@@ -32,32 +32,36 @@ public class CommentController {
         }
         return response;
     }
-//    @PostMapping("/{commentId}/edits")
-//    public ApiResponse<Comment> updateComment(@PathVariable String commentId,
-//                                                              @RequestBody CommentDTO commentDTO) {
-//        Comment updatedComment = commentService.updateComment(commentId, commentDTO);
-//        ApiResponse<Comment> response = new ApiResponse<>();
-//        response.setResult(updatedComment);
-//        response.setMessage("Comment updated successfully");
-//        return response;
-//    }
-//    @GetMapping("/{commentId}")
-//    public ApiResponse<Comment> getCommentById(@PathVariable String commentId) {
-//        Comment comment = commentService.getCommentById(commentId);
-//
-//        ApiResponse<Comment> response = new ApiResponse<>();
-//        response.setResult(comment);
-//        response.setMessage("Comment retrieved successfully");
-//        return response;
-//    }
-//
-//    @DeleteMapping("/{commentId}")
-//    String deleteComment(@PathVariable String commentId){
-//        commentService.deleteComment(commentId);
-//        return "Comment has been deleted";
-//    }
-//    @GetMapping
-//    public List<Comment> getAllComments(){
-//        return commentService.getAllComments();
-//    }
+    @PutMapping("/{commentId}")
+    public ApiResponse<Comment> updateComment(@PathVariable String commentId,
+                                                              @RequestBody CommentDTO commentDTO) {
+        Comment updatedComment = commentService.updateComment(commentId, commentDTO);
+        ApiResponse<Comment> response = new ApiResponse<>();
+        response.setResult(updatedComment);
+        response.setMessage("Comment updated successfully");
+        return response;
+    }
+    @GetMapping("/{commentId}")
+    public ApiResponse<Comment> getCommentById(@PathVariable String commentId) {
+        Comment comment = commentService.getCommentById(commentId);
+
+        ApiResponse<Comment> response = new ApiResponse<>();
+        response.setResult(comment);
+        response.setMessage("Comment retrieved successfully");
+        return response;
+    }
+
+    @DeleteMapping("/{commentId}")
+    String deleteComment(@PathVariable String commentId){
+        commentService.deleteComment(commentId);
+        return "Comment has been deleted";
+    }
+@GetMapping
+public ApiResponse<List<Comment>> getAllComments(){
+    List<Comment> comments = commentService.getAllComments();
+    ApiResponse<List<Comment>> response = new ApiResponse<>();
+    response.setResult(comments);
+    response.setMessage("Comments retrieved all successfully");
+    return response;
+}
 }
