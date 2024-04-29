@@ -37,8 +37,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     String deleteUser(@PathVariable String userId){
         userService.deleteUser(userId);
-        return "User has been deleted";
-    }
+        return "User has been deleted"; }
     @PutMapping("/{userId}")
     User updateUser(@PathVariable String userId, @RequestBody UserUpdateRequest request){
         return userService.updateUser(userId, request);

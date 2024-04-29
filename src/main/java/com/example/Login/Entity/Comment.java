@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -14,6 +16,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String content;
+    private Date createAt;
+    private Date updateAt;
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;

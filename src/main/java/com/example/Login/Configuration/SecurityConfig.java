@@ -24,13 +24,16 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS_USER = {"/users",
+    private final String[] PUBLIC_ENDPOINTS_ALL = {"/users",
             "/auth/token", "/auth/introspect"
     };
     private final String[] PUBLIC_ENDPOINTS_GET_ADMIN = {"/users"
     };
     private final String[] PUBLIC_ENDPOINTS_POST_ADMIN = {"/posts"
     };
+    private final String[] PUBLIC_ENDPOINTS_DELETE_ADMIN = {"/posts/{postId}", "/users/{userId}"};
+
+    private final String[] PUBLIC_ENDPOINTS_PUT_ADMIN = {"/posts/{postId}"};
 
     @Value("${jwt.signerKey}")
     private String signerKey;
@@ -38,12 +41,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
-                request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_USER).permitAll()
+                request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_ALL).permitAll()
                         .requestMatchers(HttpMethod.GET,PUBLIC_ENDPOINTS_GET_ADMIN).
                         hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS_POST_ADMIN).hasAuthority("ROLE_ADMIN")
-
-
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS_DELETE_ADMIN).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS_PUT_ADMIN).hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 ->

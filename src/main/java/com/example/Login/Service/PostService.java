@@ -2,8 +2,10 @@ package com.example.Login.Service;
 
 import com.example.Login.Dto.Request.ApiResponse;
 import com.example.Login.Dto.Request.PostDTO;
+import com.example.Login.Entity.Comment;
 import com.example.Login.Entity.Post;
 import com.example.Login.Entity.User;
+import com.example.Login.Repository.CommentRepository;
 import com.example.Login.Repository.PostRepository;
 import com.example.Login.Repository.UserRepository;
 import com.example.Login.exception.AppException;
@@ -26,6 +28,8 @@ public class PostService {
     PostRepository postRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     public Post createPost(PostDTO postDTO) {
         try {
@@ -35,7 +39,6 @@ public class PostService {
             if (authentication == null || !authentication.isAuthenticated()) {
                 throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
-
             Optional<User> optionalUser = userRepository.findByUsername(username);
             if (optionalUser.isEmpty()) {
                 throw new AppException(ErrorCode.USER_NOT_EXISTED);

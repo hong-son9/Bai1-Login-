@@ -24,7 +24,7 @@ public class PostController {
         ApiResponse<Post> response = new ApiResponse<>();
         if (post == null) {
             response.setCode(HttpStatus.BAD_REQUEST.value());
-            response.setMessage("User not found");
+            response.setMessage("Post not found");
         } else {
             response.setResult(post);
         }

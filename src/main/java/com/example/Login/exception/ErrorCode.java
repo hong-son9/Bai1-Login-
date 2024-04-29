@@ -20,6 +20,9 @@ public enum ErrorCode {
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     EMAIL_INVALID(1111, "Email must has @gmail.com", HttpStatus.BAD_REQUEST),
     INVALID_PHONE(1234,"Phone over 10 characters, starting with 0", HttpStatus.BAD_REQUEST),
+    POST_NOT_FOUND(1111, "Post not found", HttpStatus.BAD_REQUEST),
+    CMT_NOT_FOUND(1111, "Error cmt", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_FOUND(1223, "Not find id comment", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
