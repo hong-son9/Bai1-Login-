@@ -1,6 +1,6 @@
 package com.example.Login.exception;
 
-import com.example.Login.Dto.Request.ApiResponse;
+import com.example.Login.dtos.request.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
