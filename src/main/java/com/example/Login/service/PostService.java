@@ -1,6 +1,8 @@
 package com.example.Login.service;
 
-import com.example.Login.dtos.request.PostDTO;
+import com.example.Login.dtos.request.PostRequestDTO;
+import com.example.Login.dtos.request.response.PostResponseDTO;
+import com.example.Login.dtos.request.response.PostUpdateResponseDTO;
 import com.example.Login.entity.Post;
 import com.example.Login.entity.User;
 import com.example.Login.repository.CommentRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
@@ -26,7 +29,7 @@ public class PostService {
     @Autowired
     CommentRepository commentRepository;
 
-    public Post createPost(PostDTO postDTO) {
+    public PostResponseDTO createPost(PostRequestDTO postDTO) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
@@ -44,20 +47,60 @@ public class PostService {
         post.setContent(postDTO.getContent());
         post.setCreateAt(new Timestamp(System.currentTimeMillis()));
         post.setCreateBy(user);
-        return postRepository.save(post);
+
+        Post savedPost = postRepository.save(post);
+        PostResponseDTO postResponseDTO = new PostResponseDTO();
+        postResponseDTO.setId(savedPost.getId());
+        postResponseDTO.setTitle(savedPost.getTitle());
+        postResponseDTO.setContent(savedPost.getContent());
+        postResponseDTO.setCreateAt(savedPost.getCreateAt());
+        postResponseDTO.setCreateBy(user.getUsername());
+        return postResponseDTO;
     }catch (Exception ex) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
-    public List<Post> getAllPosts(){
-        return postRepository.findAll();
+    public List<PostUpdateResponseDTO> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+        return posts.stream()
+                .map(post -> {
+                    PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+                    postUpdateResponseDTO.setId(post.getId());
+                    postUpdateResponseDTO.setTitle(post.getTitle());
+                    postUpdateResponseDTO.setContent(post.getContent());
+                    postUpdateResponseDTO.setCreateAt(post.getCreateAt());
+                    postUpdateResponseDTO.setUpdateAt(post.getUpdateAt());
+                    postUpdateResponseDTO.setCreateBy(post.getCreateBy().getUsername());
+                    return postUpdateResponseDTO;
+                })
+                .collect(Collectors.toList());
     }
 
-    public Post getPostId(String id){
-        return postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found"));
+    public PostUpdateResponseDTO getPostId(String id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+            postUpdateResponseDTO.setId(post.getId());
+            postUpdateResponseDTO.setTitle(post.getTitle());
+            postUpdateResponseDTO.setContent(post.getContent());
+            postUpdateResponseDTO.setCreateAt(post.getCreateAt());
+            postUpdateResponseDTO.setUpdateAt(post.getUpdateAt());
+            postUpdateResponseDTO.setCreateBy(post.getCreateBy().getUsername());
+            return postUpdateResponseDTO;
+        } else {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
     }
-    public Post updatePost(String postId, PostDTO postDTO) {
+    public Post getPost(String id) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        if (optionalPost.isPresent()) {
+            return optionalPost.get();
+        } else {
+            throw new AppException(ErrorCode.POST_NOT_FOUND);
+        }
+    }
+    public PostUpdateResponseDTO updatePost(String postId, PostRequestDTO postDTO) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
@@ -71,14 +114,23 @@ public class PostService {
                 throw new AppException(ErrorCode.USER_NOT_EXISTED);
             }
 
-            Post post = getPostId(postId);
+            Post post = getPost(postId);
             User user = optionalUser.get();
             post.setTitle(postDTO.getTitle());
             post.setContent(postDTO.getContent());
             post.setCreateAt(post.getCreateAt());
             post.setUpdateAt(new Timestamp(System.currentTimeMillis()));
             post.setCreateBy(user);
-            return postRepository.save(post);
+
+            Post savedPost = postRepository.save(post);
+            PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+            postUpdateResponseDTO.setId(savedPost.getId());
+            postUpdateResponseDTO.setTitle(savedPost.getTitle());
+            postUpdateResponseDTO.setContent(savedPost.getContent());
+            postUpdateResponseDTO.setCreateAt(savedPost.getCreateAt());
+            postUpdateResponseDTO.setUpdateAt(savedPost.getUpdateAt());
+            postUpdateResponseDTO.setCreateBy(user.getUsername());
+            return postUpdateResponseDTO;
         } catch (Exception ex) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }

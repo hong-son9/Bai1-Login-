@@ -9,6 +9,7 @@ import com.example.Login.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,18 +25,13 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     @PostMapping("/token")
 
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthencationRequest request){
-        var result = authenticationService.authenticate(request);
-        return ApiResponse.<AuthenticationResponse>builder()
-                .result(result)
-                .build();
+    AuthenticationResponse authenticate(@RequestBody AuthencationRequest request){
+        return authenticationService.authenticate(request);
     }
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
+    IntrospectResponse authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
-        var result = authenticationService.introspect(request);
-        return ApiResponse.<IntrospectResponse>builder()
-                .result(result)
-                .build();
+        return authenticationService.introspect(request);
+
     }
 }

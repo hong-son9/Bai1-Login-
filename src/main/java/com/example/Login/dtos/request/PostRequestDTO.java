@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDTO {
+public class PostRequestDTO {
     private String id;
     private String title;
     private String content;

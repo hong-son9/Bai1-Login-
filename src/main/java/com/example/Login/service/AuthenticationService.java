@@ -45,14 +45,14 @@ public class AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticate = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if(!authenticate){
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AppException(ErrorCode.PASSWORD_FALSE);
         }
         var token = generateToken(user);
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
+                .username(user.getUsername())
                 .build();
-
     }
     private String generateToken(User user){
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
@@ -75,14 +75,11 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
     }
-    private String buildScope(User user){
-        StringJoiner stringJoiner = new StringJoiner(" ");
-
-        if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(stringJoiner::add);
-
-        return stringJoiner.toString();
+    private String buildScope(User user) {
+        String roles = user.getRoles();
+        return roles != null ? roles : "";
     }
+
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
 

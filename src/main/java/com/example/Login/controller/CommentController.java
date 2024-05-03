@@ -2,6 +2,8 @@ package com.example.Login.controller;
 
 import com.example.Login.dtos.request.ApiResponse;
 import com.example.Login.dtos.request.CommentDTO;
+import com.example.Login.dtos.request.response.CommentResponseDTO;
+import com.example.Login.dtos.request.response.CommentUpdateResponseDTO;
 import com.example.Login.entity.Comment;
 import com.example.Login.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,36 +18,18 @@ public class CommentController {
     @Autowired
     CommentService commentService;
     @PostMapping("/{post_id}")
-    public ApiResponse<Comment> createComment(@PathVariable String post_id, @RequestBody CommentDTO commentDTO) {
-        Comment comment = commentService.createComment(post_id, commentDTO);
-        ApiResponse<Comment> response = new ApiResponse<>();
-        if (comment == null) {
-            response.setCode(HttpStatus.BAD_REQUEST.value());
-            response.setMessage("Comment not found");
-        } else {
-            response.setCode(HttpStatus.CREATED.value());
-            response.setMessage("Comment created successfully");
-            response.setResult(comment);
-        }
-        return response;
+    public CommentResponseDTO createComment(@PathVariable String post_id, @RequestBody CommentDTO commentDTO) {
+        return commentService.createComment(post_id, commentDTO);
     }
     @PutMapping("/{commentId}")
-    public ApiResponse<Comment> updateComment(@PathVariable String commentId,
-                                                              @RequestBody CommentDTO commentDTO) {
-        Comment updatedComment = commentService.updateComment(commentId, commentDTO);
-        ApiResponse<Comment> response = new ApiResponse<>();
-        response.setResult(updatedComment);
-        response.setMessage("Comment updated successfully");
-        return response;
+    public CommentUpdateResponseDTO updateComment(@PathVariable String commentId,
+                                                  @RequestBody CommentDTO commentDTO) {
+        return commentService.updateComment(commentId, commentDTO);
     }
     @GetMapping("/{commentId}")
-    public ApiResponse<Comment> getCommentById(@PathVariable String commentId) {
-        Comment comment = commentService.getCommentById(commentId);
+    public CommentUpdateResponseDTO getCommentById(@PathVariable String commentId) {
+        return commentService.getCommentById(commentId);
 
-        ApiResponse<Comment> response = new ApiResponse<>();
-        response.setResult(comment);
-        response.setMessage("Comment retrieved successfully");
-        return response;
     }
 
     @DeleteMapping("/{commentId}")
@@ -54,11 +38,8 @@ public class CommentController {
         return "Comment has been deleted";
     }
 @GetMapping
-public ApiResponse<List<Comment>> getAllComments(){
-    List<Comment> comments = commentService.getAllComments();
-    ApiResponse<List<Comment>> response = new ApiResponse<>();
-    response.setResult(comments);
-    response.setMessage("Comments retrieved all successfully");
-    return response;
+public List<CommentUpdateResponseDTO> getAllComments(){
+    return commentService.getAllComments();
+
 }
 }

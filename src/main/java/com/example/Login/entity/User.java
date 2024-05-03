@@ -1,5 +1,7 @@
 package com.example.Login.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,9 @@ public class User {
     private String password;
     private String email;
     private String phone;
-    @JoinColumn(name = "user_id")
-    private Set<String> roles;
+
+    @JsonRawValue
+    @Column(length = 255)
+    private String roles;
+
 }

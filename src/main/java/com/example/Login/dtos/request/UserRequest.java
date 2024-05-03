@@ -18,4 +18,5 @@ public class UserRequest {
     String email;
     @Pattern(regexp = "0[0-9]{9,}", message = "INVALID_PHONE")
     String phone;
+    String roles;
 }
