@@ -36,26 +36,19 @@ public class CommentService {
     private UserRepository userRepository;
 
     public CommentResponseDTO createComment(String postId, CommentDTO commentDTO) {
-        Logger logger = LoggerFactory.getLogger(CommentService.class);
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-
         String username = authentication.getName();
-
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isEmpty()) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty()) {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
-
         Post post = optionalPost.get();
         User user = optionalUser.get();
 
@@ -74,7 +67,6 @@ public class CommentService {
         return commentResponseDTO;
     }
 
-
     public List<CommentUpdateResponseDTO> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
         return comments.stream()
@@ -90,7 +82,6 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    //
     public CommentUpdateResponseDTO getCommentById(String id) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
@@ -107,31 +98,24 @@ public class CommentService {
         }
     }
 
-    //
     public CommentUpdateResponseDTO updateComment(String commentId, CommentDTO commentDTO) {
-        Logger logger = LoggerFactory.getLogger(CommentService.class);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-
         Optional<User> optionalUser = userRepository.findByUsername(authentication.getName());
         if (optionalUser.isEmpty()) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isEmpty()) {
             throw new AppException(ErrorCode.COMMENT_NOT_FOUND);
         }
-
         Comment comment = optionalComment.get();
         User user = optionalUser.get();
         comment.setContent(commentDTO.getContent());
         comment.setUpdateAt(new Timestamp(System.currentTimeMillis()));
         comment.setCreateBy(user);
-
 
         Comment saveComments = commentRepository.save(comment);
         CommentUpdateResponseDTO commentUpdateResponseDTO = new CommentUpdateResponseDTO();
@@ -142,6 +126,7 @@ public class CommentService {
         commentUpdateResponseDTO.setCreateBy(user.getUsername());
         return commentUpdateResponseDTO;
     }
+
     public void deleteComment(String commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         Comment comment = optionalComment.orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));

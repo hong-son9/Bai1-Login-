@@ -2,7 +2,6 @@ package com.example.Login.service;
 
 import com.example.Login.dtos.request.UserRequest;
 import com.example.Login.dtos.request.UserUpdateRequest;
-import com.example.Login.dtos.request.response.UserResponseDTO;
 import com.example.Login.entity.User;
 import com.example.Login.repository.UserRepository;
 import com.example.Login.exception.AppException;
@@ -25,16 +24,13 @@ public class UserService{
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        // Tạo một đối tượng người dùng mới
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
-
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Xác định vai trò của người dùng
         if ("ADMIN".equalsIgnoreCase(request.getRoles())) {
             user.setRoles("ADMIN");
         } else {
@@ -42,8 +38,6 @@ public class UserService{
         }
         return userRepository.save(user);
     }
-
-
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
@@ -54,7 +48,6 @@ public class UserService{
     public void deleteUser(String userId){
         userRepository.deleteById(userId);
     }
-
 
     public User updateUser(String username, UserUpdateRequest request) {
             User user = getUser(username);
@@ -69,14 +62,5 @@ public class UserService{
             user.setPassword(passwordEncoder.encode(request.getPassword()));
             return userRepository.save(user);
         }
-
-    public boolean checkLogin(String username, String password) {
-        Optional<User> optionalUser = Optional.ofNullable(getUser(username));
-        if(optionalUser.isPresent() && optionalUser.get().getPassword().equals(password)){
-            return true;
-        }
-        return false;
-    }
-
 }
 

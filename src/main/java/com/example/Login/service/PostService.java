@@ -75,7 +75,6 @@ public class PostService {
                 })
                 .collect(Collectors.toList());
     }
-
     public PostUpdateResponseDTO getPostId(String id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
@@ -104,16 +103,13 @@ public class PostService {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
-
             if (authentication == null || !authentication.isAuthenticated()) {
                 throw new AppException(ErrorCode.UNAUTHENTICATED);
             }
-
             Optional<User> optionalUser = userRepository.findByUsername(username);
             if (optionalUser.isEmpty()) {
                 throw new AppException(ErrorCode.USER_NOT_EXISTED);
             }
-
             Post post = getPost(postId);
             User user = optionalUser.get();
             post.setTitle(postDTO.getTitle());
@@ -135,7 +131,6 @@ public class PostService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
-
     public void deletePost(String id){
         postRepository.deleteById(id);
     }
