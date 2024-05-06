@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.Date;
 @Data
-public class CommentUpdateResponseDTO {
+public class CommentUpdateResponse {
     private String id;
     private String content;
     private Date createAt;

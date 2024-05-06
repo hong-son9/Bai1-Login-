@@ -1,4 +1,4 @@
-package com.example.Login.dtos.request;
+package com.example.Login.dtos.request.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

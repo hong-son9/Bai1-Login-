@@ -1,8 +1,8 @@
 package com.example.Login.service;
 
-import com.example.Login.dtos.request.PostRequestDTO;
-import com.example.Login.dtos.request.response.PostResponseDTO;
-import com.example.Login.dtos.request.response.PostUpdateResponseDTO;
+import com.example.Login.dtos.request.PostRequest;
+import com.example.Login.dtos.request.response.PostResponse;
+import com.example.Login.dtos.request.response.PostUpdateResponse;
 import com.example.Login.entity.Post;
 import com.example.Login.entity.User;
 import com.example.Login.repository.CommentRepository;
@@ -29,7 +29,7 @@ public class PostService {
     @Autowired
     CommentRepository commentRepository;
 
-    public PostResponseDTO createPost(PostRequestDTO postDTO) {
+    public PostResponse createPost(PostRequest postDTO) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
@@ -49,7 +49,7 @@ public class PostService {
         post.setCreateBy(user);
 
         Post savedPost = postRepository.save(post);
-        PostResponseDTO postResponseDTO = new PostResponseDTO();
+        PostResponse postResponseDTO = new PostResponse();
         postResponseDTO.setId(savedPost.getId());
         postResponseDTO.setTitle(savedPost.getTitle());
         postResponseDTO.setContent(savedPost.getContent());
@@ -60,11 +60,11 @@ public class PostService {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
     }
-    public List<PostUpdateResponseDTO> getAllPosts() {
+    public List<PostUpdateResponse> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         return posts.stream()
                 .map(post -> {
-                    PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+                    PostUpdateResponse postUpdateResponseDTO = new PostUpdateResponse();
                     postUpdateResponseDTO.setId(post.getId());
                     postUpdateResponseDTO.setTitle(post.getTitle());
                     postUpdateResponseDTO.setContent(post.getContent());
@@ -75,11 +75,11 @@ public class PostService {
                 })
                 .collect(Collectors.toList());
     }
-    public PostUpdateResponseDTO getPostId(String id) {
+    public PostUpdateResponse getPostId(String id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         if (optionalPost.isPresent()) {
             Post post = optionalPost.get();
-            PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+            PostUpdateResponse postUpdateResponseDTO = new PostUpdateResponse();
             postUpdateResponseDTO.setId(post.getId());
             postUpdateResponseDTO.setTitle(post.getTitle());
             postUpdateResponseDTO.setContent(post.getContent());
@@ -99,7 +99,7 @@ public class PostService {
             throw new AppException(ErrorCode.POST_NOT_FOUND);
         }
     }
-    public PostUpdateResponseDTO updatePost(String postId, PostRequestDTO postDTO) {
+    public PostUpdateResponse updatePost(String postId, PostRequest postDTO) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
@@ -119,7 +119,7 @@ public class PostService {
             post.setCreateBy(user);
 
             Post savedPost = postRepository.save(post);
-            PostUpdateResponseDTO postUpdateResponseDTO = new PostUpdateResponseDTO();
+            PostUpdateResponse postUpdateResponseDTO = new PostUpdateResponse();
             postUpdateResponseDTO.setId(savedPost.getId());
             postUpdateResponseDTO.setTitle(savedPost.getTitle());
             postUpdateResponseDTO.setContent(savedPost.getContent());

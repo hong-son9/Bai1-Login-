@@ -1,6 +1,5 @@
 package com.example.Login.controller;
 
-import com.example.Login.dtos.request.ApiResponse;
 import com.example.Login.dtos.request.AuthencationRequest;
 import com.example.Login.dtos.request.IntrospectRequest;
 import com.example.Login.dtos.request.response.AuthenticationResponse;
@@ -9,7 +8,6 @@ import com.example.Login.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

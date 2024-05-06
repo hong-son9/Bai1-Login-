@@ -1,9 +1,8 @@
 package com.example.Login.service;
 
-import com.example.Login.dtos.request.CommentDTO;
-import com.example.Login.dtos.request.response.CommentResponseDTO;
-import com.example.Login.dtos.request.response.CommentUpdateResponseDTO;
-import com.example.Login.dtos.request.response.PostUpdateResponseDTO;
+import com.example.Login.dtos.request.CommentRequest;
+import com.example.Login.dtos.request.response.CommentResponse;
+import com.example.Login.dtos.request.response.CommentUpdateResponse;
 import com.example.Login.entity.Comment;
 import com.example.Login.entity.Post;
 import com.example.Login.entity.User;
@@ -12,8 +11,6 @@ import com.example.Login.repository.PostRepository;
 import com.example.Login.repository.UserRepository;
 import com.example.Login.exception.AppException;
 import com.example.Login.exception.ErrorCode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +32,7 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
-    public CommentResponseDTO createComment(String postId, CommentDTO commentDTO) {
+    public CommentResponse createComment(String postId, CommentRequest commentDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -59,7 +56,7 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
         post.getComments().add(savedComment);
 
-        CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
+        CommentResponse commentResponseDTO = new CommentResponse();
         commentResponseDTO.setId(savedComment.getId());
         commentResponseDTO.setContent(savedComment.getContent());
         commentResponseDTO.setCreateAt(savedComment.getCreateAt());
@@ -67,11 +64,11 @@ public class CommentService {
         return commentResponseDTO;
     }
 
-    public List<CommentUpdateResponseDTO> getAllComments() {
+    public List<CommentUpdateResponse> getAllComments() {
         List<Comment> comments = commentRepository.findAll();
         return comments.stream()
                 .map(post -> {
-                    CommentUpdateResponseDTO commentUpdateResponseDTO = new CommentUpdateResponseDTO();
+                    CommentUpdateResponse commentUpdateResponseDTO = new CommentUpdateResponse();
                     commentUpdateResponseDTO.setId(post.getId());
                     commentUpdateResponseDTO.setContent(post.getContent());
                     commentUpdateResponseDTO.setCreateAt(post.getCreateAt());
@@ -82,11 +79,11 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
-    public CommentUpdateResponseDTO getCommentById(String id) {
+    public CommentUpdateResponse getCommentById(String id) {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         if (optionalComment.isPresent()) {
             Comment comment = optionalComment.get();
-            CommentUpdateResponseDTO commentUpdateResponseDTO = new CommentUpdateResponseDTO();
+            CommentUpdateResponse commentUpdateResponseDTO = new CommentUpdateResponse();
             commentUpdateResponseDTO.setId(comment.getId());
             commentUpdateResponseDTO.setContent(comment.getContent());
             commentUpdateResponseDTO.setCreateAt(comment.getCreateAt());
@@ -98,7 +95,7 @@ public class CommentService {
         }
     }
 
-    public CommentUpdateResponseDTO updateComment(String commentId, CommentDTO commentDTO) {
+    public CommentUpdateResponse updateComment(String commentId, CommentRequest commentDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -118,7 +115,7 @@ public class CommentService {
         comment.setCreateBy(user);
 
         Comment saveComments = commentRepository.save(comment);
-        CommentUpdateResponseDTO commentUpdateResponseDTO = new CommentUpdateResponseDTO();
+        CommentUpdateResponse commentUpdateResponseDTO = new CommentUpdateResponse();
         commentUpdateResponseDTO.setId(saveComments.getId());
         commentUpdateResponseDTO.setContent(saveComments.getContent());
         commentUpdateResponseDTO.setCreateAt(saveComments.getCreateAt());

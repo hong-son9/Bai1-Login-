@@ -21,13 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class AuthenticationService {
     @Autowired
     private UserRepository userRepository;
     @NonFinal
-    protected static final String SINGER_KEY = "q4EqqfDOx9qu3ubN6V8v+ohY4KdRgJA2TmT8c9+094LgEoKWhGLKllj8hQlkxDv3";
+    protected static final String SIGNER_KEY = "q4EqqfDOx9qu3ubN6V8v+ohY4KdRgJA2TmT8c9+094LgEoKWhGLKllj8hQlkxDv3";
 
 
     public AuthenticationResponse authenticate(AuthencationRequest request){
@@ -68,7 +66,7 @@ public class AuthenticationService {
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(header, payload);
         try{
-            jwsObject.sign(new MACSigner(SINGER_KEY.getBytes()));
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
         }catch (JOSEException e){
             log.error("Cannot create token", e);
@@ -83,7 +81,7 @@ public class AuthenticationService {
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
 
-        JWSVerifier verifier = new MACVerifier(SINGER_KEY.getBytes());
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();

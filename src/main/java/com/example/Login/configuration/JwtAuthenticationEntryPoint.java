@@ -4,10 +4,9 @@ package com.example.Login.configuration;
 
 
 
-import com.example.Login.dtos.request.ApiResponse;
+import com.example.Login.dtos.request.response.ApiResponse;
 import com.example.Login.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
